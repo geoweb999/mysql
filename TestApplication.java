@@ -13,6 +13,7 @@ public class TestApplication {
    static final String GET_NEXT_ID = "select max(student_id) + 1 as ID from Students";
 
 public static int GetMenuChoice() {
+   // display simple menu and return user's menu choice
    boolean valid = false;
    int choice = 0;
    Scanner scnr = new Scanner(System.in);
@@ -30,6 +31,7 @@ public static int GetMenuChoice() {
    return choice;
 }
 public static void SelectQuery(Connection conn) throws SQLException {
+   // runs SELECT_QUERY and returns row with row labels
    Statement stmt = conn.createStatement();
    ResultSet rs = stmt.executeQuery(SELECT_QUERY);
    // Extract data from result set
@@ -44,6 +46,7 @@ public static void SelectQuery(Connection conn) throws SQLException {
 }
 
 public static void SelectQueryGPA(Connection conn) throws SQLException {
+   // runs GPA_QUERY and returns rows with row labels
    Statement stmt = conn.createStatement();
    ResultSet rs = stmt.executeQuery(GPA_QUERY);
    // Extract data from result set
@@ -58,7 +61,7 @@ public static void SelectQueryGPA(Connection conn) throws SQLException {
 }
 
 public static void UpdateGPA(Connection conn) throws SQLException {
-
+   // prompts user for valid student id and new GPA value, updates via prepared statement
    Scanner scnr = new Scanner(System.in);
    System.out.print("Enter student id to update: ");
    int id = scnr.nextInt();
@@ -74,6 +77,15 @@ public static void UpdateGPA(Connection conn) throws SQLException {
 }
 
 public static void AddStudent(Connection conn) throws SQLException {
+   // compute next student id (not threadsafe) and prompts user to enter new student data
+   // via prepared statement
+   Scanner scnr = new Scanner(System.in);
+   System.out.print("Enter First Name: ");
+   String first = scnr.nextLine();
+   System.out.print("Enter Last Name: ");
+   String last = scnr.nextLine();
+   System.out.print("Enter GPA: ");
+   double GPA = scnr.nextFloat();
    Statement st = conn.createStatement();
    ResultSet rs = st.executeQuery(GET_NEXT_ID);
    int id;
@@ -85,14 +97,6 @@ public static void AddStudent(Connection conn) throws SQLException {
    }
    rs.close();
 
-   Scanner scnr = new Scanner(System.in);
-   System.out.print("Enter First Name: ");
-   String first = scnr.nextLine();
-   System.out.print("Enter Last Name: ");
-   String last = scnr.nextLine();
-   System.out.print("Enter GPA: ");
-   double GPA = scnr.nextFloat();
-   
    PreparedStatement stmt = conn.prepareStatement(INSERT_QUERY);
       
    stmt.setInt(1, id);  // This would set GPA
